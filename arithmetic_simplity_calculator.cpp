@@ -35,7 +35,7 @@ int operation(int firstNum, int secondNum, char op)
 	case '-':
 		return firstNum - secondNum;
 	case '*':
-		return firstNum - secondNum;
+		return firstNum * secondNum;
 	case '/':
 	{
 		return firstNum / secondNum;
