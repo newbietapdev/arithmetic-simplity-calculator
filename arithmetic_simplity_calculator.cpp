@@ -1,47 +1,49 @@
 #include <iostream>
-int operation(int, int, char); //Function prototype
+#include <limits> //for std::numeric_limits
+bool operate(char); //function prototype
+void calculationMath(double, double, char);
 void input()
 {
 	std::cout << "=== Simple Calculator ===\n";
 	std::cout << "Enter first number: ";
-	int firstNum{};
+	double firstNum{};
 	std::cin >> firstNum;
-tryOperatorAgain:
-	std::cout << "Enter operator (+, -, *, /): ";
 	char op{};
-	std::cin >> op;
-	if (op != '+' && op != '-' && op != '*' && op != '/')
+	while (true)
 	{
-		std::cout << "Invalid operator, please input operator valid!\n";
-		goto tryOperatorAgain;
+		std::cout << "Enter operator (+, -, *, /): ";
+		std::cin >> op;
+		std::cin.ignore(std::numeric_limits <std::streamsize>::max(), '\n');
+		if (operate(op))
+			break;
+		else
+			continue;
 	}
 	std::cout << "Enter second number: ";
-	int secondNum{};
+	double secondNum{};
 	std::cin >> secondNum;
-	//resole situation divison by zero
-	if (secondNum == 0 && op == '/')
+	//resolve situation divison by zero
+	if (op == '/' && secondNum == 0.0)
 	{
-		std::cout << "Error: Division by zero is not allowed!";
+		std::cout << "Error, this number cann't evenly divided by zero.\n";
 		return;
 	}
-	std::cout << "Result: " << firstNum << ' ' << op << ' ' << secondNum << " = " << operation(firstNum, secondNum, op) << '\n';
+	calculationMath(firstNum, secondNum, op);
+	return;
 }
-int operation(int firstNum, int secondNum, char op)
+bool operate(char op)
 {
-	switch (op)
-	{
-	case '+':
-		return firstNum + secondNum;
-	case '-':
-		return firstNum - secondNum;
-	case '*':
-		return firstNum * secondNum;
-	case '/':
-	{
-		return firstNum / secondNum;
-	}
-	}
-	return 0;
+		switch (op)
+		{
+		case '+': //fallthrough if one of which case-statement is true
+		case '-':
+		case '*':
+		case '/':
+			return true;
+		default:
+			std::cout << "You just have entered operator invalid, please try again!\n";
+		}
+		return false;
 }
 bool calculateAgain()
 {
@@ -58,6 +60,27 @@ bool calculateAgain()
 		else
 			continue; //this-statement unecessary but with purpose more readable for reader
 	}//if you input some character differ with 'y' and 'n' this loop will be repeated until you correctly type.
+}
+void calculationMath(double x, double y, char op)
+{
+	switch (op)
+	{
+	case '+':
+	{
+		std::cout << "Result: " << x << " + " << y << " = " << x + y;
+		break;
+	}
+	case '-':
+		std::cout << "Result: " << x << " - " << y << " = " << x - y;
+		break;
+	case '*':
+		std::cout << "Result: " << x << " * " << y << " = " << x * y;
+		break;
+	case '/':
+		std::cout << "Result: " << x << " / " << y << " = " << x / y;
+		break;
+	}
+	return;
 }
 int main()
 {
