@@ -1,65 +1,120 @@
 #include <iostream>
 #include <limits> //for std::numeric_limits
-bool operate(char); //function prototype
 void calculationMath(double, double, char);
+void ignoreLine()
+{
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+bool hasUnextractedInput()
+{
+	return !std::cin.eof() && std::cin.peek() != '\n';
+}
+bool clearFailedExtracted()
+{
+	if (!std::cin)
+	{
+		std::cin.clear();
+		ignoreLine();
+		return true;
+	}
+	return false;
+}
+
 void input()
 {
 	std::cout << "=== Simple Calculator ===\n";
-	std::cout << "Enter first number: ";
 	double firstNum{};
-	std::cin >> firstNum;
+	while (true)
+	{
+		std::cout << "Enter first number: ";
+		std::cin >> firstNum;
+		if (clearFailedExtracted())
+			continue; //has failed extracted
+		if (hasUnextractedInput())
+		{
+			ignoreLine();
+			continue;
+		}
+		break;
+	}
 	char op{};
 	while (true)
 	{
 		std::cout << "Enter operator (+, -, *, /): ";
 		std::cin >> op;
-		std::cin.ignore(std::numeric_limits <std::streamsize>::max(), '\n');
-		if (operate(op))
-			break;
-		else
+		if (clearFailedExtracted())
 			continue;
+		if (hasUnextractedInput())
+		{
+			ignoreLine();
+			continue;
+		}
+		else
+		{
+			if (op != '+' && op != '-' && op != '*' && op != '/')
+				continue;
+			else
+				break;
+		}
 	}
-	std::cout << "Enter second number: ";
 	double secondNum{};
-	std::cin >> secondNum;
-	//resolve situation divison by zero
-	if (op == '/' && secondNum == 0.0)
+	while (true)
 	{
-		std::cout << "Error, this number cann't evenly divided by zero.\n";
-		return;
+		std::cout << "Enter second number: ";
+		std::cin >> secondNum;
+		if (clearFailedExtracted())
+			continue; //has failed extracted
+		if (hasUnextractedInput())
+		{
+			ignoreLine();
+			continue;
+		}
+		else
+		{
+			if (secondNum == 0.0 && op == '/')
+			{
+				ignoreLine();
+				continue;
+			}
+			break;
+		}
 	}
 	calculationMath(firstNum, secondNum, op);
-	return;
-}
-bool operate(char op)
-{
-		switch (op)
-		{
-		case '+': //fallthrough if one of which case-statement is true
-		case '-':
-		case '*':
-		case '/':
-			return true;
-		default:
-			std::cout << "You just have entered operator invalid, please try again!\n";
-		}
-		return false;
 }
 bool calculateAgain()
 {
+	char ans{};
 	while (true)
 	{
 		std::cout << '\n';
 		std::cout << "Would you like to calculate again (y/n)? ";
-		char ans{};
 		std::cin >> ans;
-		if (ans == 'y')
-			return true;
-		else if (ans == 'n')
-			return false;
+		if (clearFailedExtracted())
+			continue;
+		if (hasUnextractedInput())
+		{
+			ignoreLine();
+			continue;
+		}
 		else
-			continue; //this-statement unecessary but with purpose more readable for reader
-	}//if you input some character differ with 'y' and 'n' this loop will be repeated until you correctly type.
+		{
+			if (ans != 'y' && ans != 'n')
+			{
+				ignoreLine();
+				continue;
+			}
+			else
+			{
+				if (ans == 'y')
+					return true;
+				else if (ans == 'n')
+				{
+					std::cout << "Thanks you for use my calculation!\n";
+					return false;
+				}
+			}
+		}
+	}
 }
 void calculationMath(double x, double y, char op)
 {
@@ -68,18 +123,19 @@ void calculationMath(double x, double y, char op)
 	case '+':
 	{
 		std::cout << "Result: " << x << " + " << y << " = " << x + y;
-		break;
+		return;
 	}
 	case '-':
 		std::cout << "Result: " << x << " - " << y << " = " << x - y;
-		break;
+		return;
 	case '*':
 		std::cout << "Result: " << x << " * " << y << " = " << x * y;
-		break;
+		return;
 	case '/':
 		std::cout << "Result: " << x << " / " << y << " = " << x / y;
-		break;
+		return;
 	}
+	std::cout << "????" << '\n'; //rodust programs for invalid parameters
 	return;
 }
 int main()
@@ -91,6 +147,7 @@ int main()
 		std::cout << '\n';
 
 	} while (calculateAgain()); //don't forget function call operator, it's will give you memory address of function if you without them
-	std::cout << "Thanks you for use my calculation!\n";
+	
 	return 0;
 }
+
