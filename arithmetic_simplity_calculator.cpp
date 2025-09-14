@@ -1,6 +1,24 @@
 #include <iostream>
 #include <limits> //for std::numeric_limits
-void calculationMath(double, double, char);
+template <typename T, typename U, typename V>
+auto operation(T x, U y, V z)
+{
+	if (z == '+')
+	{
+		return x + y;
+	}
+	else if (z == '-')
+	{
+		return x - y;
+	}
+	else if (z == '*')
+	{
+		return x * y;
+	}
+	else
+		return x / y;
+}
+
 void ignoreLine()
 {
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -79,7 +97,7 @@ void input()
 			break;
 		}
 	}
-	calculationMath(firstNum, secondNum, op);
+	std::cout << "Result: " << firstNum << " " << op << " " << secondNum << " = " << operation(firstNum, secondNum, op) << '\n';
 }
 bool calculateAgain()
 {
@@ -116,28 +134,7 @@ bool calculateAgain()
 		}
 	}
 }
-void calculationMath(double x, double y, char op)
-{
-	switch (op)
-	{
-	case '+':
-	{
-		std::cout << "Result: " << x << " + " << y << " = " << x + y;
-		return;
-	}
-	case '-':
-		std::cout << "Result: " << x << " - " << y << " = " << x - y;
-		return;
-	case '*':
-		std::cout << "Result: " << x << " * " << y << " = " << x * y;
-		return;
-	case '/':
-		std::cout << "Result: " << x << " / " << y << " = " << x / y;
-		return;
-	}
-	std::cout << "????" << '\n'; //rodust programs for invalid parameters
-	return;
-}
+
 int main()
 {
 	//more modularity you make, more your code will be maintainable in the future.
@@ -147,7 +144,8 @@ int main()
 		std::cout << '\n';
 
 	} while (calculateAgain()); //don't forget function call operator, it's will give you memory address of function if you without them
-	
+
 	return 0;
 }
+
 
